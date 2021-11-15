@@ -1,5 +1,6 @@
 #include "../inc/game.h"
 #include "../inc/states/main_menu_state.h"
+#include <iostream>
 
 Game::Game() {
 	logger = std::make_shared<TimeLoggerDecorator>(
@@ -34,7 +35,9 @@ void Game::exit() {
 }
 
 
-void Game::push_state(std::unique_ptr<GameState>&& st) {
+void Game::push_state(std::unique_ptr<GameState>&& st, bool force) {
+	if (force)
+		pop_state();
 	state_stack.push(std::move(st));
 	window_input->set_command_handler(
 				state_stack.top()->get_command_handler());
@@ -48,6 +51,8 @@ void Game::pop_state() {
 	if (!state_stack.empty())
 		window_input->set_command_handler(
 				state_stack.top()->get_command_handler());
+	else
+		window_input->set_command_handler(nullptr);
 }
 
 

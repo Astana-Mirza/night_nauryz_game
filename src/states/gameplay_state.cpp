@@ -1,4 +1,4 @@
-#include "../../inc/states/gameplay_state.h"
+/*#include "../../inc/states/gameplay_state.h"
 #include "../../inc/states/pause_state.h"
 
 #include "../../inc/cell_elements/main_character.h"
@@ -152,3 +152,4 @@ void GameplayState::add_object(const std::shared_ptr<CellElement>& obj,
 	get_cell(obj->get_pos()).set_element(obj);
 	painter->register_cell_element(*obj, texname);
 }
+*/

@@ -17,7 +17,7 @@ public:
 	Game();
 	void run();
 	void exit();
-	void push_state(std::unique_ptr<GameState>&& st);
+	void push_state(std::unique_ptr<GameState>&& st, bool force=false);
 	void pop_state();
 	void to_main_menu();
 

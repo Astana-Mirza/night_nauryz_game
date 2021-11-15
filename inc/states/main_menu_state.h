@@ -2,6 +2,10 @@
 #define MAIN_MENU_STATE_H
 
 #include "panel_state.h"
+#include "gameplay_state.h"
+#include "../rules/coins_picked_rule.h"
+#include "../rules/enemies_killed_rule.h"
+#include "../rules/max_steps_rule.h"
 #include "../ui/main_menu_panel.h"
 
 class Game;
@@ -16,7 +20,7 @@ public:
 
 private:
 	std::shared_ptr<ILogger> logger;
-	std::string difficulty;
+	std::string difficulty = "Easy";
 };
 
 #endif

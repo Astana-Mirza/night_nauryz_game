@@ -8,12 +8,13 @@ MainCharacter::MainCharacter(IGameplayManager& gm, int hp,
 
 
 bool MainCharacter::move_to(Point2D r) {
-	//auto& prev = gameplay.get_game().get_cell(position);
+	//auto& prev = gameplay.get_cell(position);
 	bool ok = AttackableElement::move_to(r);
 	auto& curr = gameplay.get_cell(r);
 	if (ok) {
 		//prev.player_exited();
 		curr.player_entered();
+		gameplay.player_moved();
 	}
 	return ok;
 }

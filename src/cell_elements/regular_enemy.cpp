@@ -20,6 +20,12 @@ bool RegularEnemy::interact(Player& el) {
 	return true;
 }
 
+
+void RegularEnemy::destroy() {
+	gameplay.enemy_killed();
+	AttackableElement::destroy();
+}
+
 bool RegularEnemy::interact(CellElement& el) { return el.interact((Enemy&)*this); }
 
 bool RegularEnemy::interact(Enemy& el) { return false; }

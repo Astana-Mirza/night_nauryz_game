@@ -1,6 +1,6 @@
 #include "../../inc/input_commands/gameplay_command_handler.h"
 
-GameplayCommandHandler::GameplayCommandHandler(GameplayState& gp):
+GameplayCommandHandler::GameplayCommandHandler(IGameplayManager& gp):
 	gameplay{gp} {}
 
 

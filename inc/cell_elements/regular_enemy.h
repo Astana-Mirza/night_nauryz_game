@@ -14,6 +14,7 @@ public:
 	bool interact(Enemy& el);
 	bool interact(PickupItem& el);
 	bool interact(Player& el);
+	void destroy();
 
 private:
 	std::unique_ptr<Strategy> strategy;
