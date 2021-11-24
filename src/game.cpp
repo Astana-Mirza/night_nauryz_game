@@ -1,12 +1,15 @@
 #include "../inc/game.h"
 #include "../inc/states/main_menu_state.h"
-#include <iostream>
+
+#define CONFIG_FILE "res/config.txt"
+#define WINDOW_NAME "Game"
 
 Game::Game() {
+	ConfigManager::instance().read_config(CONFIG_FILE);
 	logger = std::make_shared<TimeLoggerDecorator>(
 		std::make_unique<Logger>(true, true));
 	auto win = std::make_shared<sf::RenderWindow>(sf::VideoMode(1366, 768),
-				"Game", sf::Style::Fullscreen);
+				WINDOW_NAME, sf::Style::Fullscreen);
 	painter = std::make_shared<SFMLEngine>(win);
 	window_input = std::make_unique<SFMLWindowHandle>(win);
 	to_main_menu();
@@ -37,7 +40,7 @@ void Game::exit() {
 
 void Game::push_state(std::unique_ptr<GameState>&& st, bool force) {
 	if (force)
-		pop_state();
+		state_stack = {};
 	state_stack.push(std::move(st));
 	window_input->set_command_handler(
 				state_stack.top()->get_command_handler());
@@ -59,7 +62,10 @@ void Game::pop_state() {
 void Game::to_main_menu() {
 	state_stack = {};
 	painter->clear_field();
-	auto main_menu = std::make_unique<MainMenuState>(*this, painter, logger);
+	auto main_menu = std::make_unique<MainMenuState>(*this);
 	window_input->set_command_handler(main_menu->get_command_handler());
 	state_stack.push(std::move(main_menu));
 }
+
+std::shared_ptr<ILogger> Game::get_logger() const { return logger; }
+std::shared_ptr<RenderEngine> Game::get_painter() const { return painter; }

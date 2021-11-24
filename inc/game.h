@@ -20,6 +20,8 @@ public:
 	void push_state(std::unique_ptr<GameState>&& st, bool force=false);
 	void pop_state();
 	void to_main_menu();
+	std::shared_ptr<ILogger> get_logger() const;
+	std::shared_ptr<RenderEngine> get_painter() const;
 
 private:
 	bool game_on = false;

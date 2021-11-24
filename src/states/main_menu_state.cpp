@@ -1,44 +1,50 @@
 #include "../../inc/states/main_menu_state.h"
 
-MainMenuState::MainMenuState(Game& g, const std::shared_ptr<RenderEngine>& render,
-		const std::shared_ptr<ILogger>& log):
-		PanelState::PanelState(g, render), logger{log} {
-	panel = std::make_unique<MainMenuPanel>(*render, *this);
+MainMenuState::MainMenuState(Game& g) : PanelState::PanelState(g) {
+	panel = std::make_unique<MainMenuPanel>(*(game.get_painter()), *this);
 }
 
 
 void MainMenuState::close() {
-	painter->pop_panel();
+	game.get_painter()->pop_panel();
 	game.exit();
 }
 
 
 void MainMenuState::start_game() {
-	painter->pop_panel();
+	game.get_painter()->pop_panel();
 	std::unique_ptr<GameState> gameplay;
-	if (difficulty == "Easy") {
-		gameplay = std::make_unique<GameplayState<
-			CoinsPickedRule<1>
-		>>(game, painter, logger);
+	switch (ConfigManager::instance().difficulty) {
+		case Difficulty::Easy:
+			gameplay = std::make_unique<GameplayState<
+				CoinsPickedRule<1>
+			>>(game);
+		break;
+		case Difficulty::Medium:
+			gameplay = std::make_unique<GameplayState<
+				CoinsPickedRule<1>,
+				EnemiesKilledRule<2>>
+			>(game);
+		break;
+		case Difficulty::Hard:
+			gameplay = std::make_unique<GameplayState<
+				CoinsPickedRule<1>,
+				EnemiesKilledRule<3>,
+				MaxStepsRule<40>>
+			>(game);
+		break;
 	}
-	else if (difficulty == "Medium") {
-		gameplay = std::make_unique<GameplayState<
-			CoinsPickedRule<1>,
-			EnemiesKilledRule<2>>
-		>(game, painter, logger);
-	}
-	else if (difficulty == "Hard") {
-		gameplay = std::make_unique<GameplayState<
-			CoinsPickedRule<1>,
-			EnemiesKilledRule<3>,
-			MaxStepsRule<40>>
-		>(game, painter, logger);
-	}
-	else
-		throw std::runtime_error{"wrong difficulty"};
 	game.push_state(std::move(gameplay), true);
 }
 
+
 void MainMenuState::set_difficulty(const std::string& diff) {
-	difficulty = diff;
+	if (diff == "Easy")
+		ConfigManager::instance().difficulty = Difficulty::Easy;
+	else if (diff == "Medium")
+		ConfigManager::instance().difficulty = Difficulty::Medium;
+	else if (diff == "Hard")
+		ConfigManager::instance().difficulty = Difficulty::Hard;
+	else
+		throw std::runtime_error{"wrong difficulty"};
 }

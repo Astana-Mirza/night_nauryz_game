@@ -10,7 +10,7 @@ class Cell;
 
 class Field {
 public:
-	Field(size_t width, size_t height);
+	Field(size_t width=0, size_t height=0);
 	Field(const Field& w);			// copy
 	Field(Field&& w);			// move
 	Field& operator =(const Field& w);	// copy assign
@@ -48,4 +48,3 @@ private:
 };
 
 #endif
-

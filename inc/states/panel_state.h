@@ -11,14 +11,13 @@ class Game;
 
 class PanelState : public GameState {
 public:
-	PanelState(Game& g, const std::shared_ptr<RenderEngine>& render);
+	PanelState(Game& g);
 	void update(double delta) {}
 	virtual void close();
 	UIPanel& get_panel() const;
 
 protected:
 	Game& game;
-	std::shared_ptr<RenderEngine> painter;
 	std::unique_ptr<UIPanel> panel;
 };
 

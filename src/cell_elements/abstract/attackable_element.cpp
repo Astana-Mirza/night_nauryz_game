@@ -22,10 +22,11 @@ int AttackableElement::change_hp(int hp) {
 		send_action(ActionCharactChanged(*this, prev, health,
 				ActionListener::Characteristic::Health));
 	}
+	int curr_health = health;
 	if (health <= 0) {
 		destroy();
 	}
-	return health-prev;
+	return curr_health-prev;
 }
 
 
