@@ -5,6 +5,7 @@
 #include <map>
 #include <stack>
 #include "interfaces/game_state.h"
+#include "interfaces/visitor.h"
 #include "logger/logger.h"
 #include "logger/time_logger_decorator.h"
 #include "render/sfml_engine.h"

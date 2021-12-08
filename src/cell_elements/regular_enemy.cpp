@@ -1,5 +1,5 @@
 #include "../../inc/cell_elements/regular_enemy.h"
-
+#include <iostream>
 std::shared_ptr<CellElement> RegularEnemy::clone() const {
 	return std::make_shared<RegularEnemy>(gameplay, health, armor,
 						power, position);
@@ -26,10 +26,14 @@ void RegularEnemy::destroy() {
 	AttackableElement::destroy();
 }
 
+void RegularEnemy::accept(Visitor& vis) {
+	vis.visit(*this);
+	if (strategy)
+		strategy->accept(vis);
+}
+
+bool RegularEnemy::has_strategy() const { return strategy!=nullptr; }
 bool RegularEnemy::interact(CellElement& el) { return el.interact((Enemy&)*this); }
-
 bool RegularEnemy::interact(Enemy& el) { return false; }
-
 bool RegularEnemy::interact(PickupItem& el) { return false; }
-
 void RegularEnemy::update() { strategy->execute(*this); }

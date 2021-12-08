@@ -15,6 +15,6 @@ bool BasePickupItem::interact(CellElement& el) {
 	return el.interact((PickupItem&)*this);
 }
 
+int BasePickupItem::get_characteristic() const { return characteristic; }
 bool BasePickupItem::interact(Enemy& el) { return false; }
-
 bool BasePickupItem::interact(PickupItem& el) { return false; }

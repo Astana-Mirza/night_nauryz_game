@@ -14,10 +14,10 @@ void SFMLEngine::register_field(const Field& f) {
 				static_cast<float>(w_width) / f_width);
 	size_t offset_x = (w_width - f_width*cell_side)/2;
 	size_t offset_y = (w_height - f_height*cell_side)/2;
-	tiles = std::vector<sf::Sprite>(f_width*f_height);
+	preload_tiles = std::vector<sf::Sprite>(f_width*f_height);
 	for (size_t i = 0; i < f_width; i++) {
 		for (size_t j = 0; j < f_height; j++) {
-			tiles[j*f_width+i].setPosition(offset_x + i*cell_side,
+			preload_tiles[j*f_width+i].setPosition(offset_x + i*cell_side,
 							offset_y + j*cell_side);
 		}
 	}
@@ -26,8 +26,8 @@ void SFMLEngine::register_field(const Field& f) {
 
 void SFMLEngine::register_cell(Point2D pos, const std::string& res) {
 	const auto& t = ResourceManager<sf::Texture>::instance().get(res);
-	tiles[pos.y*f_width+pos.x].setTexture(t);
-	tiles[pos.y*f_width+pos.x].setScale(
+	preload_tiles[pos.y*f_width+pos.x].setTexture(t);
+	preload_tiles[pos.y*f_width+pos.x].setScale(
 		cell_side/t.getSize().x,
 		cell_side/t.getSize().y);
 }
@@ -38,9 +38,9 @@ void SFMLEngine::register_cell_element(const CellElement& el,
 	const auto& t = ResourceManager<sf::Texture>::instance().get(res);
 	auto pos = el.get_pos();
 	sf::Sprite sp(t);
-	sp.setPosition(tiles[pos.y*f_width+pos.x].getPosition());
+	sp.setPosition(preload_tiles[pos.y*f_width+pos.x].getPosition());
 	sp.setScale( cell_side/t.getSize().x, cell_side/t.getSize().y );
-	objects[el.get_id()] = sp;
+	preload_objects[el.get_id()] = sp;
 }
 
 
@@ -62,9 +62,23 @@ void SFMLEngine::pop_panel() {
 	panels.pop_back();
 }
 
-void SFMLEngine::clear_field() {
+
+void SFMLEngine::clear_preload_field() {
+	preload_tiles = {};
+	preload_objects = {};
+}
+
+
+void SFMLEngine::apply_preload() {
+	tiles = std::move(preload_tiles);
+	objects = std::move(preload_objects);
+}
+
+
+void SFMLEngine::clear() {
 	tiles = {};
 	objects = {};
+	panels = {};
 }
 
 void SFMLEngine::render_frame() {

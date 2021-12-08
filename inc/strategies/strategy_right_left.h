@@ -7,11 +7,12 @@
 class StrategyRightLeft : public Strategy {
 public:
 	StrategyRightLeft(bool r=true);
+	bool get_direction() const;
 	void execute(Movable& el);
+	void accept(Visitor& vis);
 
 private:
 	bool right;
 };
 
 #endif
-

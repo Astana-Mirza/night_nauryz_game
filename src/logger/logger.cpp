@@ -4,6 +4,9 @@ Logger::Logger(bool console, bool file, const std::string& filename) :
 		write_to_console{console} {
 	if (file) {
 		outfile.open(filename);
+		if (!outfile.is_open()) {
+			throw FileError{"unable to open file", filename};
+		}
 	}
 	write_log("---------------[LOG STARTED]---------------\n");
 }

@@ -7,11 +7,12 @@
 class StrategyUpDown : public Strategy {
 public:
 	StrategyUpDown(bool d=true);
+	bool get_direction() const;
 	void execute(Movable& el);
+	void accept(Visitor& vis);
 
 private:
 	bool down;
 };
 
 #endif
-

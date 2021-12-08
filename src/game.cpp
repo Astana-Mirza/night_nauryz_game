@@ -5,14 +5,24 @@
 #define WINDOW_NAME "Game"
 
 Game::Game() {
-	ConfigManager::instance().read_config(CONFIG_FILE);
+	try {
 	logger = std::make_shared<TimeLoggerDecorator>(
-		std::make_unique<Logger>(true, true));
-	auto win = std::make_shared<sf::RenderWindow>(sf::VideoMode(1366, 768),
-				WINDOW_NAME, sf::Style::Fullscreen);
-	painter = std::make_shared<SFMLEngine>(win);
-	window_input = std::make_unique<SFMLWindowHandle>(win);
-	to_main_menu();
+		std::make_unique<Logger>(true, true, "log.txt"));
+	} catch(GameError& e) {
+		std::exit(1);
+	}
+	try {
+		ConfigManager::instance().read_config(CONFIG_FILE);
+		auto win = std::make_shared<sf::RenderWindow>(
+			sf::VideoMode(1366, 768), WINDOW_NAME,
+			sf::Style::Fullscreen);
+		painter = std::make_shared<SFMLEngine>(win);
+				window_input = std::make_unique<SFMLWindowHandle>(win);
+		to_main_menu();
+	} catch(GameError& e) {
+		logger->write_log("Critical error: " + e.what() + "\nAborting\n");
+		std::exit(1);
+	}
 }
 
 
@@ -30,6 +40,7 @@ void Game::run() {
 		now = std::chrono::steady_clock::now();
 		elapsed_seconds = now - stamp;
 	}
+	painter->clear();
 }
 
 
@@ -39,8 +50,9 @@ void Game::exit() {
 
 
 void Game::push_state(std::unique_ptr<GameState>&& st, bool force) {
-	if (force)
+	if (force) {
 		state_stack = {};
+	}
 	state_stack.push(std::move(st));
 	window_input->set_command_handler(
 				state_stack.top()->get_command_handler());
@@ -61,7 +73,7 @@ void Game::pop_state() {
 
 void Game::to_main_menu() {
 	state_stack = {};
-	painter->clear_field();
+	painter->clear();
 	auto main_menu = std::make_unique<MainMenuState>(*this);
 	window_input->set_command_handler(main_menu->get_command_handler());
 	state_stack.push(std::move(main_menu));

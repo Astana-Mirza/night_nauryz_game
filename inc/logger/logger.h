@@ -7,6 +7,7 @@
 #include <map>
 #include "../interfaces/ilogger.h"
 #include "stream_operators.h"
+#include "../exception/file_error.h"
 
 class Logger: public ILogger {
 public:

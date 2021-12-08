@@ -6,6 +6,13 @@ std::shared_ptr<CellElement> SupportEnemy::clone() const {
 }
 
 
+void SupportEnemy::accept(Visitor& vis) {
+	vis.visit(*this);
+	if (strategy)
+		strategy->accept(vis);
+}
+
+
 bool SupportEnemy::interact(Player& el) {
 	int dmg = el.change_armor(-power);
 	send_action(ActionAttacked(*this, -dmg,

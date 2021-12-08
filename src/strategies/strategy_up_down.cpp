@@ -1,6 +1,8 @@
 #include "../../inc/strategies/strategy_up_down.h"
 
 StrategyUpDown::StrategyUpDown(bool d) : down{d} {}
+void StrategyUpDown::accept(Visitor& vis) { vis.visit(*this); }
+bool StrategyUpDown::get_direction() const { return down; }
 
 void StrategyUpDown::execute(Movable& el) {
 	bool ok;
@@ -14,4 +16,3 @@ void StrategyUpDown::execute(Movable& el) {
 	if (!ok)
 		down = !down;
 }
-

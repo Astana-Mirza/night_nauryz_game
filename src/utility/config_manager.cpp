@@ -4,12 +4,14 @@ void ConfigManager::read_config(const std::string& filename) {
 	resource_names = {};
 	key_bindings = {};
 	std::ifstream conf(filename, std::ios::in);
+	size_t line_num = 1;
 	bool controls = true;
 	if (conf.is_open()) {
 		std::string line;
 		while (std::getline(conf, line)) {
-			std::remove_if(line.begin(), line.end(),
-				[](char c)->bool { return std::isspace(c); });
+			auto new_end = std::remove_if(line.begin(), line.end(),
+				[](char c){ return std::isspace(c); });
+			line.erase(new_end, line.end());
 			if (line.empty())
 				continue;
 			if (line == "[controls]")
@@ -18,20 +20,27 @@ void ConfigManager::read_config(const std::string& filename) {
 				controls = false;
 			else {
 				auto eq_pos = line.find('=');
+				if (eq_pos == line.size()-1)
+					throw ParseError{"missing \"=\"",
+							filename, line_num};
 				auto name = line.substr(0, eq_pos);
 				auto val = line.substr(eq_pos+1);
-				if (controls)
-					key_bindings[std::stoi(val)] =
-							command_names[name];
-				else
+				if (name.empty() || val.empty())
+					throw ParseError{"missing name or value",
+						filename, line_num};
+				if (controls) {
+					add_parsed_binding(name, val,
+							filename, line_num);
+				} else {
 					resource_names[name] = val;
+				}
 			}
+			line_num++;
 		}
 		conf.close();
 	}
 	else
-		throw std::runtime_error{
-			"unable to open file"};
+		throw FileError{"unable to open file", filename};
 }
 
 
@@ -52,8 +61,7 @@ void ConfigManager::write_config(const std::string& filename) {
 		conf.close();
 	}
 	else
-		throw std::runtime_error{
-			"unable to open file"};
+		throw FileError{"unable to open file", filename};
 }
 
 
@@ -73,4 +81,21 @@ void ConfigManager::set_binding(int key, InputCommand command) {
 			key_bindings.erase(key);
 	}
 	key_bindings[key] = command;
+}
+
+
+void ConfigManager::add_parsed_binding(const std::string& name,
+				const std::string& val,
+				const std::string& filename, size_t line_num) {
+	if (!std::all_of(val.begin(), val.end(), [](char c)->bool {
+		return std::isdigit(c);
+	}))
+		throw ParseError{"must be a number after \"=\"",
+				filename, line_num};
+	int key = std::stoi(val);
+	if (key_bindings.contains(key))
+		throw KeyBindError{"attempt to bind key twice", key};
+	if (!command_names.contains(name))
+		throw KeyBindError{"unknown command: " + name, key};
+	key_bindings[key] = command_names[name];
 }

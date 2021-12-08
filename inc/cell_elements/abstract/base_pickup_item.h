@@ -9,6 +9,7 @@ class BasePickupItem : public BaseCellElement,
 			public PickupItem {
 public:
 	BasePickupItem(IGameplayManager& gm, int ch, Point2D p);
+	int get_characteristic() const;
 	bool interact(CellElement& el);
 	bool interact(Enemy& el);
 	bool interact(PickupItem& el);

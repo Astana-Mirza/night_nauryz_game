@@ -13,25 +13,25 @@
 #include "../interfaces/game_state.h"
 #include "../input_commands/gameplay_command_handler.h"
 #include "../utility/standard_builder.h"
+#include "../utility/serial_file_visitor.h"
 
 class Game;
 
 template <typename... Rules>
 class GameplayState: public GameState, public IGameplayManager {
 public:
-	GameplayState(Game& g);
-	void update(double delta);
-	void load_field(const std::string& filename);
+	GameplayState(Game& g, size_t killed=0, size_t step=0, size_t coins=0):
+	game{g}, enemies_killed{killed}, steps{step}, coins_picked{coins} {
+		command_handler =
+			std::make_shared<GameplayCommandHandler>(*this);
+	}
 
 	void game_over() {
 		exiting = true;
 		auto info = std::make_unique<InfoState>(game, "Game over");
 		game.push_state(std::move(info));
 	}
-	void game_paused() {
-		auto pause = std::make_unique<PauseState>(game);
-		game.push_state(std::move(pause));
-	}
+
 	void level_completed() {
 		if (check_all_rules(Rules{}...)) {
 			exiting = true;
@@ -39,6 +39,11 @@ public:
 			game.push_state(std::move(info));
 		}
 	}
+
+	void set_field(Field&& field) { current_field = std::move(field); }
+
+	void update(double delta);
+	void game_paused();
 
 	void player_moved() { steps++; }
 	void enemy_killed() { enemies_killed++; }
@@ -59,58 +64,56 @@ public:
 	}
 
 private:
+	void load_next_level(const std::string& filename);
 	bool check_all_rules(Rules... args) const {
 		return (... && (args.check_rule(*this)));
 	}
 
 	Game& game;
-	double update_time = 0.1;	// 1 update per this count of seconds
+	double update_time = 0.2;	// 1 update per this count of seconds
 	double wait_time = 0;
 	bool exiting = false;
 	size_t enemies_killed;
 	size_t steps;
 	size_t coins_picked;
-	std::unique_ptr<FieldBuilder> builder;
 	std::set<std::shared_ptr<CellElement>> objects;
 	Field current_field;
 };
 
 
 template <typename... Rules>
-GameplayState<Rules...>::GameplayState(Game& g) : game{g} {
-	command_handler = std::make_shared<GameplayCommandHandler>(*this);
-	builder = std::make_unique<StandardBuilder>(*this, game.get_painter(),
-				game.get_logger(), command_handler);
-	load_field(LEVEL1);
-	game.get_logger()->write_log("\tLEVEL STARTED\n");
+void GameplayState<Rules...>::game_paused() {
+	auto saver = std::make_shared<SerialFileVisitor>(current_field,
+			enemies_killed, steps, coins_picked);
+	auto pause = std::make_unique<PauseState>(game, saver);
+	game.push_state(std::move(pause));
 }
 
 
 template <typename... Rules>
 void GameplayState<Rules...>::update(double delta) {
-	if (exiting)
+	if (exiting) {
 		game.to_main_menu();
-	wait_time += delta;
-	if (wait_time >= update_time) {
-		for (auto& obj : objects) {	// update cell elementsя
-			obj->update();
+	} else {
+		wait_time += delta;
+		if (wait_time >= update_time) {
+			for (auto& obj : objects) {	// update cell elements
+				obj->update();
+			}
+			wait_time = 0;
 		}
-		wait_time = 0;
 	}
 }
 
 
 template <typename... Rules>
-void GameplayState<Rules...>::load_field(const std::string& filename) {
-	enemies_killed = 0;
-	steps = 0;
-	coins_picked = 0;
-	objects = {};
-	game.get_painter()->clear_field();
-	builder->reset(LEVEL1);
-	builder->setup_cells();
-	builder->spawn_elements();
-	current_field = std::move(builder->get_result());
+void GameplayState<Rules...>::load_next_level(const std::string& filename) {
+	StandardBuilder builder{game};
+	if (builder.load(filename)) {
+		game.get_painter()->clear();
+		game.get_painter()->apply_preload();
+		game.push_state(builder.get_result(), true);
+	}
 }
 
 #endif

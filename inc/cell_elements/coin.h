@@ -10,6 +10,7 @@ public:
 	using BaseCellElement::BaseCellElement;
 	void give_effect(Player& picker);
 	std::shared_ptr<CellElement> clone() const;
+	void accept(Visitor& vis);
 	bool interact(CellElement& el);
 	bool interact(Enemy& el);
 	bool interact(PickupItem& el);

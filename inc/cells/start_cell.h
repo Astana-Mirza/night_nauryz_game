@@ -3,11 +3,13 @@
 
 #include "cell.h"
 
+class Visitor;
+
 class StartCell : public Cell {
 public:
 	StartCell();
+	void accept(Visitor& vis);
 	std::unique_ptr<Cell> clone() const;
 };
 
 #endif
-

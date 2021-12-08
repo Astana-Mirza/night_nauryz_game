@@ -21,8 +21,10 @@ public:
 				const std::string& res);
 	std::unique_ptr<UIPanelView> register_panel(const std::string& texture);
 	void pop_panel();
-	void clear_field();
+	void clear();
 	void render_frame();
+	void clear_preload_field();
+	void apply_preload();
 
 	void handle_move(const CellElement& el, Point2D pos);
 	void handle_destruction(const CellElement& el);
@@ -42,6 +44,8 @@ private:
 	float cell_side;
 	std::vector<sf::Sprite> tiles;
 	std::map<size_t, sf::Sprite> objects;
+	std::vector<sf::Sprite> preload_tiles;
+	std::map<size_t, sf::Sprite> preload_objects;
 	std::shared_ptr<sf::RenderWindow> window;
 	std::list<SFMLPanelHandler> panels;
 };

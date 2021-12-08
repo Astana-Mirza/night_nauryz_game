@@ -7,6 +7,9 @@
 #include <algorithm>
 #include <cstdlib>
 #include "../interfaces/command_handler.h"
+#include "../exception/file_error.h"
+#include "../exception/parse_error.h"
+#include "../exception/key_bind_error.h"
 
 enum class Difficulty { Easy, Medium, Hard };
 
@@ -29,6 +32,10 @@ public:
 
 private:
 	ConfigManager() =default;
+	void add_parsed_binding(const std::string& name,
+			const std::string& val,
+			const std::string& filename, size_t line_num);
+
 	std::map<std::string, InputCommand> command_names = {
 		{"up", InputCommand::MoveUp},
 		{"down", InputCommand::MoveDown},

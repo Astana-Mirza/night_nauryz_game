@@ -18,8 +18,11 @@ public:
 				const std::string& res) =0;
 	virtual std::unique_ptr<UIPanelView> register_panel(
 				const std::string& texture) =0;
+
 	virtual void pop_panel() =0;
-	virtual void clear_field() =0;
+	virtual void clear_preload_field() =0;
+	virtual void clear() =0;
+	virtual void apply_preload() =0;
 	virtual ~RenderEngine() =default;
 };
 

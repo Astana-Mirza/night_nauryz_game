@@ -59,8 +59,9 @@ std::shared_ptr<CellElement> MainCharacter::clone() const {
 }
 
 void MainCharacter::destroy() {
+	auto& gm = gameplay;
 	AttackableElement::destroy();
-	gameplay.game_over();
+	gm.game_over();
 }
 
 bool MainCharacter::interact(PickupItem& el) {
@@ -68,6 +69,6 @@ bool MainCharacter::interact(PickupItem& el) {
 	return true;
 }
 
+void MainCharacter::accept(Visitor& vis) { vis.visit(*this); }
 bool MainCharacter::interact(CellElement& el) { return el.interact((Player&)*this); }
-
 bool MainCharacter::interact(Player& el) { return false; }

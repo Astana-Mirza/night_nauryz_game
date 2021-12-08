@@ -16,11 +16,8 @@ void Cell::set_element(const std::shared_ptr<CellElement>& el) {
 	element = el;
 }
 
+void Cell::accept(Visitor& vis) { vis.visit(*this); }
 void Cell::remove_element() { element = nullptr; }
-
 bool Cell::empty() const { return element==nullptr; }
-
 bool Cell::is_passable() const { return passable; }
-
 const std::shared_ptr<CellElement>& Cell::get_element() const { return element; }
-

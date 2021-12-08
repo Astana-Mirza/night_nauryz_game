@@ -7,6 +7,11 @@ void PowerUp::give_effect(Player& picker) {
 }
 
 
+void PowerUp::accept(Visitor& vis) {
+	vis.visit(*this);
+}
+
+
 std::shared_ptr<CellElement> PowerUp::clone() const {
 	return std::make_shared<PowerUp>(gameplay, characteristic, get_pos());
 }

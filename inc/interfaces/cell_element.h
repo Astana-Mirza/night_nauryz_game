@@ -6,10 +6,14 @@
 #include "enemy.h"
 #include "player.h"
 #include "../point2d.h"
+#include "visitor.h"
+
+class Visitor;
 
 class CellElement {
 public:
 	virtual std::shared_ptr<CellElement> clone() const =0;
+	virtual void accept(Visitor& vis) =0;
 	virtual bool interact(CellElement& el) =0;
 	virtual bool interact(PickupItem& el) =0;
 	virtual bool interact(Enemy& el) =0;

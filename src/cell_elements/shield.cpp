@@ -7,6 +7,11 @@ void Shield::give_effect(Player& picker) {
 }
 
 
+void Shield::accept(Visitor& vis) {
+	vis.visit(*this);
+}
+
+
 std::shared_ptr<CellElement> Shield::clone() const {
 	return std::make_shared<Shield>(gameplay, characteristic, get_pos());
 }

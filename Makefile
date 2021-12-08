@@ -10,12 +10,14 @@ INCDIR      := inc
 BUILDDIR    := obj
 TARGETDIR   := bin
 RESDIR      := res
+LEVELDIR    := levels
+SAVEDIR     := saves
 SRCEXT      := cpp
 DEPEXT      := d
 OBJEXT      := o
 
 #Flags, Libraries and Includes
-CFLAGS      := -Wall -O3 -std=c++2a -g
+CFLAGS      := -Wall -O3 -std=c++2a -g3
 LIB         := -lsfml-graphics -lsfml-system -lsfml-window
 INC         := -I$(INCDIR) -I/usr/local/include
 INCDEP      := -I$(INCDIR)
@@ -35,11 +37,14 @@ remake: cleaner all
 #Copy Resources from Resources Directory to Target Directory
 resources: directories
 	@cp -r $(RESDIR)/* $(TARGETDIR)/$(RESDIR)/
+	@cp -r $(LEVELDIR)/* $(TARGETDIR)/$(LEVELDIR)/
 
 #Make the Directories
 directories:
 	@mkdir -p $(TARGETDIR)
 	@mkdir -p $(BUILDDIR)
+	@mkdir -p $(TARGETDIR)/$(SAVEDIR)
+	@mkdir -p $(TARGETDIR)/$(LEVELDIR)
 
 #Clean only Objecst
 clean:

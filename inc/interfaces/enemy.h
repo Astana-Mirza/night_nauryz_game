@@ -8,7 +8,7 @@
 class Enemy : public virtual Attackable {
 public:
 	virtual void set_strategy(std::unique_ptr<Strategy>&& s) =0;
+	virtual bool has_strategy() const =0;
 };
 
 #endif
-

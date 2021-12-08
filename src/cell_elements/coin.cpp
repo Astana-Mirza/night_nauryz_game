@@ -22,6 +22,6 @@ bool Coin::interact(CellElement& el) {
 	return el.interact((PickupItem&)*this);
 }
 
+void Coin::accept(Visitor& vis) { vis.visit(*this); }
 bool Coin::interact(Enemy& el) { return false; }
-
 bool Coin::interact(PickupItem& el) { return false; }

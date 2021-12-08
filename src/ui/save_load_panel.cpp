@@ -30,5 +30,5 @@ void SaveLoadPanel::notify(const std::string& event) {
 	if (event == "cancel")
 		state.close();
 	else
-		state.save_or_load(event.back()-'0');
+		state.save_or_load("saves/" + event + ".txt");
 }

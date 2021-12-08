@@ -1,6 +1,7 @@
 #include "../../inc/states/main_menu_state.h"
 
 MainMenuState::MainMenuState(Game& g) : PanelState::PanelState(g) {
+	ConfigManager::instance().difficulty = Difficulty::Easy;
 	panel = std::make_unique<MainMenuPanel>(*(game.get_painter()), *this);
 }
 
@@ -12,31 +13,20 @@ void MainMenuState::close() {
 
 
 void MainMenuState::start_game() {
-	game.get_painter()->pop_panel();
-	std::unique_ptr<GameState> gameplay;
-	switch (ConfigManager::instance().difficulty) {
-		case Difficulty::Easy:
-			gameplay = std::make_unique<GameplayState<
-				CoinsPickedRule<1>
-			>>(game);
-		break;
-		case Difficulty::Medium:
-			gameplay = std::make_unique<GameplayState<
-				CoinsPickedRule<1>,
-				EnemiesKilledRule<2>>
-			>(game);
-		break;
-		case Difficulty::Hard:
-			gameplay = std::make_unique<GameplayState<
-				CoinsPickedRule<1>,
-				EnemiesKilledRule<3>,
-				MaxStepsRule<40>>
-			>(game);
-		break;
+	StandardBuilder builder{game};
+	if (builder.load("levels/level1.txt")) {
+		game.get_painter()->clear();
+		game.get_painter()->apply_preload();
+		game.push_state(builder.get_result(), true);
 	}
-	game.push_state(std::move(gameplay), true);
+
 }
 
+
+void MainMenuState::load_game() {
+	auto load = std::make_unique<SaveLoadState>(game);
+	game.push_state(std::move(load));
+}
 
 void MainMenuState::set_difficulty(const std::string& diff) {
 	if (diff == "Easy")

@@ -7,6 +7,11 @@ void Healer::give_effect(Player& picker) {
 }
 
 
+void Healer::accept(Visitor& vis) {
+	vis.visit(*this);
+}
+
+
 std::shared_ptr<CellElement> Healer::clone() const {
 	return std::make_shared<Healer>(gameplay, characteristic, get_pos());
 }

@@ -7,6 +7,7 @@ class SupportEnemy : public RegularEnemy {
 public:
 	using RegularEnemy::RegularEnemy;
 	std::shared_ptr<CellElement> clone() const;
+	void accept(Visitor& vis);
 	bool interact(Player& el);
 	bool interact(Enemy& el);
 };

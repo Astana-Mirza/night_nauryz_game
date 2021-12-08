@@ -2,6 +2,7 @@
 #define MAIN_MENU_PANEL_H
 
 #include "../states/main_menu_state.h"
+#include "../states/save_load_state.h"
 #include "base_panel.h"
 #include "menu_button.h"
 
