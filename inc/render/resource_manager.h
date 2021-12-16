@@ -3,7 +3,7 @@
 
 #include <map>
 #include <string>
-#include <stdexcept>
+#include "../exception/file_error.h"
 
 template <typename Resource>
 class ResourceManager {
@@ -27,8 +27,8 @@ public:
 
 	void load_from_file(const std::string& name) {
 		if (!resources[name].loadFromFile(name)) {
-			throw std::runtime_error{
-				"Cannot load resource from file " + name};
+			throw FileError{
+				"cannot load resource from file ", name};
 		}
 	}
 
@@ -38,4 +38,3 @@ private:
 };
 
 #endif
-

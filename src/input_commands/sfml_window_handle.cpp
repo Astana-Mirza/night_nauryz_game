@@ -9,7 +9,8 @@ void SFMLWindowHandle::process_commands() {
 	while (window->pollEvent(event)) {
 		if (event.type != sf::Event::KeyPressed)
 			continue;
-		auto command = key_bindings[event.key.code];
+		auto command = ConfigManager::instance()
+					.key_to_command(event.key.code);
 		if (command_handler)
 			command_handler->handle_command(command);
 	}

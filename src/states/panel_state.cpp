@@ -1,13 +1,12 @@
 #include "../../inc/states/panel_state.h"
 
-PanelState::PanelState(Game& g, const std::shared_ptr<RenderEngine>& render):
-						game{g}, painter{render} {
+PanelState::PanelState(Game& g) : game{g} {
 	command_handler = std::make_unique<PanelCommandHandler>(*this);
 }
 
 
 void PanelState::close() {
-	painter->pop_panel();
+	game.get_painter()->pop_panel();
 	game.pop_state();
 }
 

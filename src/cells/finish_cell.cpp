@@ -15,3 +15,7 @@ std::unique_ptr<Cell> FinishCell::clone() const {
 		cell_p->set_element(element->clone());
 	return cell_p;
 }
+
+void FinishCell::accept(Visitor& vis) {
+	vis.visit(*this);
+}

@@ -6,6 +6,13 @@ std::shared_ptr<CellElement> VampireEnemy::clone() const {
 }
 
 
+void VampireEnemy::accept(Visitor& vis) {
+	vis.visit(*this);
+	if (strategy)
+		strategy->accept(vis);
+}
+
+
 bool VampireEnemy::interact(Player& el) {
 	int dmg = el.calculate_damage(power);
 	send_action(ActionAttacked(*this, dmg,

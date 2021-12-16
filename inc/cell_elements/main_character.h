@@ -16,6 +16,7 @@ public:
 	void set_move_dest(Point2D pos);
 	void pickup(PickupItem& it);
 	std::shared_ptr<CellElement> clone() const;
+	void accept(Visitor& vis);
 	void destroy();
 	bool interact(CellElement& el);
 	bool interact(Enemy& el);

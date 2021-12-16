@@ -14,8 +14,16 @@ PausePanel::PausePanel(RenderEngine& render, PauseState& st) : state{st} {
 	view->add_button(50, 100, BTN_TEXTUTE, "Resume", FONT, 30);
 
 	buttons.push_back(std::move(
+			std::make_unique<MenuButton>(*this, "save")));
+	view->add_button(50, 175, BTN_TEXTUTE, "Save", FONT, 30);
+
+	buttons.push_back(std::move(
+			std::make_unique<MenuButton>(*this, "load")));
+	view->add_button(50, 250, BTN_TEXTUTE, "Load", FONT, 30);
+
+	buttons.push_back(std::move(
 			std::make_unique<MenuButton>(*this, "quit")));
-	view->add_button(50, 175, BTN_TEXTUTE, "Quit", FONT, 30);
+	view->add_button(50, 325, BTN_TEXTUTE, "Quit", FONT, 30);
 
 	view->set_active_button(0);
 }
@@ -24,6 +32,10 @@ PausePanel::PausePanel(RenderEngine& render, PauseState& st) : state{st} {
 void PausePanel::notify(const std::string& event) {
 	if (event == "resume")
 		state.close();
+	else if (event == "save")
+		state.save_menu();
+	else if (event == "load")
+		state.load_menu();
 	else if (event == "quit")
 		state.quit();
 }

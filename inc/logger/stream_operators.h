@@ -7,7 +7,6 @@
 #include <ostream>
 
 std::ostream& operator<<(std::ostream& os, const CellElement& el);
-//std::ostream& operator<<(std::ostream& os, const Attackable& el);
 std::ostream& operator<<(std::ostream& os, const Point2D& p);
 
 #endif

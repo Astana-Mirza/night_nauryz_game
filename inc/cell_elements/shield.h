@@ -7,6 +7,7 @@ class Shield :public BasePickupItem {
 public:
 	using BasePickupItem::BasePickupItem;
 	void give_effect(Player& picker);
+	void accept(Visitor& vis);
 	std::shared_ptr<CellElement> clone() const;
 };
 
